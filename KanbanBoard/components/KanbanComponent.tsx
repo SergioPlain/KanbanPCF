@@ -24,7 +24,7 @@ const itemsFromBackend:IRecord[] = [
     {id: "4", content:"Fourth task"}
 ];
 
-const columnsFromBacked = {
+const columnsFromBacked:IDroppable = {
     ["1"]:{
         name: "Requested",
         items: itemsFromBackend
@@ -82,8 +82,8 @@ const OnDragEnd = (result:any, columns:any, setColumns:any) => {
     }
 }
 
-export const KanbanComponent = () => {
-    const [columns, setColumns] = useState(columnsFromBacked);
+export const KanbanComponent = (props:IDroppable) => {
+    const [columns, setColumns] = useState(props);
 
     return (
         <div className='main-container'>

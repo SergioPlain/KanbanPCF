@@ -9,6 +9,7 @@ interface IStatus {
 }
 
 type ConditionExpression = ComponentFramework.PropertyHelper.DataSetApi.ConditionExpression;
+type DataSet = ComponentFramework.PropertyTypes.DataSet;
 
 
 export class KanbanBoard implements ComponentFramework.ReactControl<IInputs, IOutputs> {
@@ -18,7 +19,7 @@ export class KanbanBoard implements ComponentFramework.ReactControl<IInputs, IOu
     private _records: ComponentFramework.PropertyTypes.DataSet;
     private _column: IColumn;
     private _record: IRecord;
-    private _droppable : IDroppable;
+    private _droppable : IDroppable = {};
     private _options: IStatus[] = [];
     private _datasetColumns: ComponentFramework.PropertyHelper.DataSetApi.Column[] = [];
 
@@ -77,24 +78,18 @@ export class KanbanBoard implements ComponentFramework.ReactControl<IInputs, IOu
     public updateView(context: ComponentFramework.Context<IInputs>): React.ReactElement {
 
         this._options.map((option) => {
-            this._records.filtering.clearFilter();
-            const condition:ConditionExpression = {
-                attributeName: "statuscode",
-                conditionOperator: 0 /* Equal */,
-                value: "%" + option.value + "%",
-            };
-            let conditionsArray: ConditionExpression[] = [];
-            conditionsArray.push(condition)
-            this._records.filtering.setFilter({
-                conditions: conditionsArray,
-                filterOperator: 0
-            });
-            this._records.refresh();
+            const label = option.label;
+            this.Filter("statuscode",option.label)
+            const object:IColumn = {
+                    name: option.label,
+                    items: []
+            }
+            this._droppable.label = object
 
         })
         
         return React.createElement(
-            KanbanComponent
+            KanbanComponent, this._droppable
         );
     }
 
