@@ -4,7 +4,7 @@ import * as React from 'react';
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 
 export interface IDroppable {
-    ["droppableId"]: IColumn
+    [key:string]: IColumn
 }
 
 export interface IRecord {

@@ -8,7 +8,8 @@ interface IStatus {
     value: number
 }
 
-type ConditionExpression = ComponentFramework.PropertyHelper.DataSetApi.ConditionExpression
+type ConditionExpression = ComponentFramework.PropertyHelper.DataSetApi.ConditionExpression;
+
 
 export class KanbanBoard implements ComponentFramework.ReactControl<IInputs, IOutputs> {
     private theComponent: ComponentFramework.ReactControl<IInputs, IOutputs>;
@@ -18,7 +19,24 @@ export class KanbanBoard implements ComponentFramework.ReactControl<IInputs, IOu
     private _column: IColumn;
     private _record: IRecord;
     private _droppable : IDroppable;
-    private _options: IStatus[];
+    private _options: IStatus[] = [];
+    private _datasetColumns: ComponentFramework.PropertyHelper.DataSetApi.Column[] = [];
+
+    private Filter(name: string, value:string):void{
+        const filtering = this._context.parameters.records.filtering;
+        filtering.clearFilter();
+        filtering.setFilter({
+            conditions: [
+                {
+                    attributeName: name,
+                    conditionOperator: 0, //Equals
+                    value: "%" + value + "%",
+                },
+            ],
+        } as ComponentFramework.PropertyHelper.DataSetApi.FilterExpression
+        );
+        this._context.parameters.records.refresh();
+    }
     
 
     /**
@@ -40,6 +58,7 @@ export class KanbanBoard implements ComponentFramework.ReactControl<IInputs, IOu
     ): void {
         this._notifyOutputChanged = notifyOutputChanged;
         this._records = context.parameters.records;
+        this._datasetColumns = this._records.columns;
 
         (context.parameters.status as ComponentFramework.PropertyTypes.OptionSetProperty).attributes?.Options.forEach(option => {
             const status = {
